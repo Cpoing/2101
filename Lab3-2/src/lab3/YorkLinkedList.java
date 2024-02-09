@@ -160,9 +160,7 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E get(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		if (i < 0 || i >= size) {
-			throw new IndexOutOfBoundsException();
-		}
+
 		Node<E> curr = head;
 		for (int j = 0; j < i; j++) {
 			curr = curr.next;
@@ -178,11 +176,11 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E set(int i, E e) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		if (i < 0 || i >= size) {
-			throw new IndexOutOfBoundsException();
-		}
 		Node<E> curr = head;
 		for (int j = 0; j < i; j++) {
+			if (curr == null) {
+				throw new IndexOutOfBoundsException();
+			}
 			curr = curr.next;
 		}
 		E prev = curr.element;
@@ -199,9 +197,7 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public void add(int i, E e) {
 		// TODO: Your implementation of this method starts here
-		if (i < 0 || i >= size) {
-			throw new IndexOutOfBoundsException();
-		}
+
 		if (i == 0) {
 			addFirst(e);
 		} else if (i == size) {
@@ -210,11 +206,18 @@ public class YorkLinkedList<E> implements List<E> {
 			Node<E> newNode = new Node<>(e);
 			Node<E> prev = head;
 			for (int j = 0; j < i - 1; j++) {
+				if (prev == null) {
+					addLast(e);
+					return;
+				}
 				prev = prev.next;
 			}
-			newNode.next = prev.next;
-			prev.next = newNode;
-			size++;
+			if (prev != null) {
+				newNode.next = prev.next;
+				prev.next = newNode;
+				size++;
+			} else
+				addLast(e);
 		}
 	}
 
@@ -285,9 +288,7 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E remove(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		if (i < 0 || i >= size) {
-			throw new IndexOutOfBoundsException();
-		}
+
 		if (i == 0) {
 			return removeFirst();
 		} else if (i == size - 1) {
@@ -364,9 +365,7 @@ public class YorkLinkedList<E> implements List<E> {
 	public boolean contains(E e) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
 		Node<E> curr = head;
-		if (curr == null) {
-			throw new NullPointerException();
-		}
+
 		while (curr != null) {
 			if (Objects.equals(curr.element, e)) {
 				return true;
@@ -386,9 +385,7 @@ public class YorkLinkedList<E> implements List<E> {
 		// TODO: Your implementation of this method starts here
 		boolean removed = false;
 		Node<E> curr = head;
-		if (curr == null) {
-			throw new NullPointerException();
-		}
+
 		while (curr != null) {
 			if (Objects.equals(curr.element, e)) {
 				remove(curr.element);
@@ -410,9 +407,7 @@ public class YorkLinkedList<E> implements List<E> {
 		// TODO: Your implementation of this method starts here
 		boolean added = false;
 		for (E item : otherList) {
-			if (item == null) {
-				throw new NullPointerException();
-			}
+
 			addLast(item);
 			added = true;
 		}
@@ -430,9 +425,7 @@ public class YorkLinkedList<E> implements List<E> {
 		// TODO: Your implementation of this method starts here
 		boolean removed = false;
 		for (E item : otherList) {
-			if (item == null) {
-				throw new NullPointerException();
-			}
+
 			while (remove(item) == true) {
 				removed = true;
 			}
@@ -450,9 +443,7 @@ public class YorkLinkedList<E> implements List<E> {
 		// TODO: Your implementation of this method starts here
 		boolean retained = false;
 		Node<E> curr = head;
-		if (curr == null) {
-			throw new NullPointerException();
-		}
+
 		while (curr != null) {
 			if (!otherList.contains(curr.element)) {
 				remove(curr.element);
@@ -470,6 +461,9 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public String toString() {
 		// TODO: Your implementation of this method starts here
+		if (isEmpty()) {
+			return "[]";
+		}
 		String res = "[" + head.element;
 		Node<E> curr = head.next;
 		while (curr != null) {
