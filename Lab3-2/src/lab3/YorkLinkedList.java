@@ -1,9 +1,7 @@
 package lab3;
 
-import java.util.*;
-import java.lang.annotation.*;
-//You are NOT allowed to add any "import" statement other than 
-//the ones already in the starter files. 
+import java.util.Iterator;
+import java.util.Objects;
 
 ///////////////////////////////////////////////////////////////////////////
 //Full Name :
@@ -57,22 +55,27 @@ public class YorkLinkedList<E> implements List<E> {
 
 	public YorkLinkedList(E[] objects) {
 		// TODO: Your implementation of this method starts here
-
+		head = null;
+		tail = null;
+		size = 0;
+		for (E object : objects) {
+			addLast(object);
+		}
 
 	}
 
 	@Override
 	public int size() {
 		// TODO: Your implementation of this method starts here
-		return -999;
-		
+		return size;
+
 	}
 
 	@Override
 	public boolean isEmpty() {
 		// TODO: Your implementation of this method starts here
-		return false;
-		
+		return size == 0;
+
 	}
 
 	/**
@@ -83,10 +86,16 @@ public class YorkLinkedList<E> implements List<E> {
 	 * 
 	 * @param e
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(1)")
 	public void addFirst(E e) {
 		// TODO: Your implementation of this method starts here
-		
+		Node<E> newNode = new Node<>(e);
+		newNode.next = head;
+		head = newNode;
+		if (size == 0) {
+			tail = head;
+		}
+		size++;
 
 	}
 
@@ -98,8 +107,12 @@ public class YorkLinkedList<E> implements List<E> {
 	 */
 	public E getFirst() {
 		// TODO: Your implementation of this method starts here
-		 return null;
-	
+		if (head != null) {
+			return head.element;
+		} else {
+			return null;
+		}
+
 	}
 
 	/**
@@ -110,10 +123,17 @@ public class YorkLinkedList<E> implements List<E> {
 	 * 
 	 * @param e
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(1)")
 	public void addLast(E e) {
 		// TODO: Your implementation of this method starts here
-
+		Node<E> newNode = new Node<>(e);
+		if (isEmpty()) {
+			head = newNode;
+		} else {
+			tail.next = newNode;
+		}
+		tail = newNode;
+		size++;
 	}
 
 	/**
@@ -125,7 +145,10 @@ public class YorkLinkedList<E> implements List<E> {
 	 */
 	public E getLast() {
 		// TODO: Your implementation of this method starts here
-		 return null;
+		if (tail != null) {
+			return tail.element;
+		} else
+			return null;
 
 	}
 
@@ -133,24 +156,38 @@ public class YorkLinkedList<E> implements List<E> {
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public E get(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		return null;
-	
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		Node<E> curr = head;
+		for (int j = 0; j < i; j++) {
+			curr = curr.next;
+		}
+		return curr.element;
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public E set(int i, E e) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		
-		return null;
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		Node<E> curr = head;
+		for (int j = 0; j < i; j++) {
+			curr = curr.next;
+		}
+		E prev = curr.element;
+		curr.element = e;
+		return prev;
 
 	}
 
@@ -158,11 +195,27 @@ public class YorkLinkedList<E> implements List<E> {
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public void add(int i, E e) {
 		// TODO: Your implementation of this method starts here
-
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (i == 0) {
+			addFirst(e);
+		} else if (i == size) {
+			addLast(e);
+		} else {
+			Node<E> newNode = new Node<>(e);
+			Node<E> prev = head;
+			for (int j = 0; j < i - 1; j++) {
+				prev = prev.next;
+			}
+			newNode.next = prev.next;
+			prev.next = newNode;
+			size++;
+		}
 	}
 
 	/**
@@ -174,10 +227,19 @@ public class YorkLinkedList<E> implements List<E> {
 	 * 
 	 * @return
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(1)")
 	public E removeFirst() {
 		// TODO: Your implementation of this method starts here
-		return null;
+		if (isEmpty()) {
+			return null;
+		}
+		E removed = head.element;
+		head = head.next;
+		size--;
+		if (size == 0) {
+			tail = null;
+		}
+		return removed;
 
 	}
 
@@ -190,11 +252,28 @@ public class YorkLinkedList<E> implements List<E> {
 	 * 
 	 * @return
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	public E removeLast() {
 		// TODO: Your implementation of this method starts here
-		return null;
-		
+		if (tail == null) {
+			return null;
+		}
+		if (head == tail) {
+			E removed = head.element;
+			head = null;
+			tail = null;
+			size--;
+			return removed;
+		}
+		Node<E> curr = head;
+		while (curr.next != tail) {
+			curr = curr.next;
+		}
+		E removed = tail.element;
+		tail = curr;
+		tail.next = null;
+		size--;
+		return removed;
 
 	}
 
@@ -202,11 +281,27 @@ public class YorkLinkedList<E> implements List<E> {
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public E remove(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
-		return null;
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (i == 0) {
+			return removeFirst();
+		} else if (i == size - 1) {
+			return removeLast();
+		} else {
+			Node<E> prev = head;
+			for (int j = 0; j < i - 1; j++) {
+				prev = prev.next;
+			}
+			E removed = prev.next.element;
+			prev.next = prev.next.next;
+			size--;
+			return removed;
+		}
 
 	}
 
@@ -223,7 +318,14 @@ public class YorkLinkedList<E> implements List<E> {
 	 */
 	public int indexOf(E e) {
 		// TODO: Your implementation of this method starts here
-		return 99;
+		Node<E> curr = head;
+		for (int i = 0; i < size; i++) {
+			if (Objects.equals(curr.element, e)) {
+				return i;
+			}
+			curr = curr.next;
+		}
+		return -1;
 	}
 
 	/**
@@ -239,89 +341,169 @@ public class YorkLinkedList<E> implements List<E> {
 	 * @param e
 	 * @return
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	public int lastIndexOf(E e) {
 		// TODO: Your implementation of this method starts here
-		
-		return -99;
+		int lastIndex = -1;
+		Node<E> curr = head;
+		for (int i = 0; i < size; i++) {
+			if (Objects.equals(curr.element, e)) {
+				lastIndex = i;
+			}
+			curr = curr.next;
+		}
+		return lastIndex;
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public boolean contains(E e) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		Node<E> curr = head;
+		if (curr == null) {
+			throw new NullPointerException();
+		}
+		while (curr != null) {
+			if (Objects.equals(curr.element, e)) {
+				return true;
+			}
+			curr = curr.next;
+		}
 		return false;
-	
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n^2)")
 	@Override
 	public boolean remove(E e) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
-		return false;
-	
+		boolean removed = false;
+		Node<E> curr = head;
+		if (curr == null) {
+			throw new NullPointerException();
+		}
+		while (curr != null) {
+			if (Objects.equals(curr.element, e)) {
+				remove(curr.element);
+				removed = true;
+			}
+			curr = curr.next;
+		}
+		return removed;
+
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public boolean addAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
-		return false;
+		boolean added = false;
+		for (E item : otherList) {
+			if (item == null) {
+				throw new NullPointerException();
+			}
+			addLast(item);
+			added = true;
+		}
+		return added;
+
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public boolean removeAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
-		return false;
+		boolean removed = false;
+		for (E item : otherList) {
+			if (item == null) {
+				throw new NullPointerException();
+			}
+			while (remove(item) == true) {
+				removed = true;
+			}
+		}
+		return removed;
 	}
 
 	/*
 	 * Add time complexity annotation taken by this method (@TimeComplexity).
 	 * Justify the time complexity inside the method body with TCJ
 	 */
-	@TimeComplexity(value = "")
+	@TimeComplexity(value = "O(n)")
 	@Override
 	public boolean retainAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
-		return false;
+		boolean retained = false;
+		Node<E> curr = head;
+		if (curr == null) {
+			throw new NullPointerException();
+		}
+		while (curr != null) {
+			if (!otherList.contains(curr.element)) {
+				remove(curr.element);
+				retained = true;
+			}
+			curr = curr.next;
+		}
+		return retained;
 	}
 
-	
 	/**
-	 * Return String value represent the content of list as 
+	 * Return String value represent the content of list as
 	 * example "[30, 110, -110, -2, 1322]"
 	 */
 	@Override
 	public String toString() {
 		// TODO: Your implementation of this method starts here
-		 return new String();
-		
+		String res = "[" + head.element;
+		Node<E> curr = head.next;
+		while (curr != null) {
+			res += ", " + curr.element;
+			curr = curr.next;
+		}
+		res += "]";
+		return res;
 	}
 
 	@Override
 	public Iterator<E> iterator() {
 		// TODO: Your implementation of this method starts here
-		return null;
-		
-	}
+		Iterator<E> iterator = new Iterator<>() {
+			Node<E> curr = head;
 
-	
+			@Override
+			public boolean hasNext() {
+				if (curr != null) {
+					return true;
+				} else
+					return false;
+			}
+
+			@Override
+			public E next() {
+				E element = curr.element;
+				curr = curr.next;
+				return element;
+			}
+
+		};
+		return iterator;
+
+	}
 
 }
