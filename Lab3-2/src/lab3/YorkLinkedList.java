@@ -1,6 +1,7 @@
 package lab3;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -89,11 +90,12 @@ public class YorkLinkedList<E> implements List<E> {
 	@TimeComplexity(value = "O(1)")
 	public void addFirst(E e) {
 		// TODO: Your implementation of this method starts here
-		Node<E> newNode = new Node<>(e);
-		newNode.next = head;
-		head = newNode;
+		Node<E> temp = new Node<>(e);
+		temp.next = head;
+		head = temp;
 		if (size == 0) {
-			tail = head;
+			tail = temp;
+			head = temp;
 		}
 		size++;
 
@@ -126,13 +128,14 @@ public class YorkLinkedList<E> implements List<E> {
 	@TimeComplexity(value = "O(1)")
 	public void addLast(E e) {
 		// TODO: Your implementation of this method starts here
-		Node<E> newNode = new Node<>(e);
+		Node<E> temp = new Node<>(e);
 		if (isEmpty()) {
-			head = newNode;
+			head = temp;
+			tail = temp;
 		} else {
-			tail.next = newNode;
+			tail.next = temp;
+			tail = temp;
 		}
-		tail = newNode;
 		size++;
 	}
 
@@ -160,6 +163,9 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E get(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException("index " + i + " out of bounds");
+		}
 
 		Node<E> curr = head;
 		for (int j = 0; j < i; j++) {
@@ -176,11 +182,12 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E set(int i, E e) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException("index " + i + " out of bounds");
+		}
 		Node<E> curr = head;
 		for (int j = 0; j < i; j++) {
-			if (curr == null) {
-				throw new IndexOutOfBoundsException();
-			}
+
 			curr = curr.next;
 		}
 		E prev = curr.element;
@@ -203,7 +210,7 @@ public class YorkLinkedList<E> implements List<E> {
 		} else if (i == size) {
 			addLast(e);
 		} else {
-			Node<E> newNode = new Node<>(e);
+			Node<E> temp = new Node<>(e);
 			Node<E> prev = head;
 			for (int j = 0; j < i - 1; j++) {
 				if (prev == null) {
@@ -213,8 +220,8 @@ public class YorkLinkedList<E> implements List<E> {
 				prev = prev.next;
 			}
 			if (prev != null) {
-				newNode.next = prev.next;
-				prev.next = newNode;
+				temp.next = prev.next;
+				prev.next = temp;
 				size++;
 			} else
 				addLast(e);
@@ -239,9 +246,10 @@ public class YorkLinkedList<E> implements List<E> {
 		E removed = head.element;
 		head = head.next;
 		size--;
-		if (size == 0) {
+
+		if (size == 0)
 			tail = null;
-		}
+
 		return removed;
 
 	}
@@ -258,7 +266,7 @@ public class YorkLinkedList<E> implements List<E> {
 	@TimeComplexity(value = "O(n)")
 	public E removeLast() {
 		// TODO: Your implementation of this method starts here
-		if (tail == null) {
+		if (isEmpty()) {
 			return null;
 		}
 		if (head == tail) {
@@ -288,6 +296,9 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public E remove(int i) throws IndexOutOfBoundsException {
 		// TODO: Your implementation of this method starts here
+		if (i < 0 || i >= size) {
+			throw new IndexOutOfBoundsException("index " + i + " out of bounds");
+		}
 
 		if (i == 0) {
 			return removeFirst();
@@ -364,6 +375,10 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public boolean contains(E e) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		if (e == null) {
+			throw new NullPointerException();
+		}
+
 		Node<E> curr = head;
 
 		while (curr != null) {
@@ -383,14 +398,29 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public boolean remove(E e) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		if (e == null) {
+			throw new NullPointerException();
+		}
+
 		boolean removed = false;
 		Node<E> curr = head;
+		Node<E> prev = null;
 
 		while (curr != null) {
 			if (Objects.equals(curr.element, e)) {
-				remove(curr.element);
+				if (prev == null) {
+					head = curr.next;
+				} else {
+					prev.next = curr.next;
+				}
+				if (tail == curr) {
+					tail = prev;
+				}
+				size--;
 				removed = true;
+				break;
 			}
+			prev = curr;
 			curr = curr.next;
 		}
 		return removed;
@@ -405,6 +435,10 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public boolean addAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		if (otherList == null) {
+			throw new NullPointerException();
+		}
+
 		boolean added = false;
 		for (E item : otherList) {
 
@@ -423,6 +457,10 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public boolean removeAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		if (otherList == null) {
+			throw new NullPointerException();
+		}
+
 		boolean removed = false;
 		for (E item : otherList) {
 
@@ -441,6 +479,10 @@ public class YorkLinkedList<E> implements List<E> {
 	@Override
 	public boolean retainAll(List<E> otherList) throws NullPointerException {
 		// TODO: Your implementation of this method starts here
+		if (otherList == null) {
+			throw new NullPointerException();
+		}
+
 		boolean retained = false;
 		Node<E> curr = head;
 
@@ -490,6 +532,9 @@ public class YorkLinkedList<E> implements List<E> {
 
 			@Override
 			public E next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
 				E element = curr.element;
 				curr = curr.next;
 				return element;
