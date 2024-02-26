@@ -7,9 +7,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 ///////////////////////////////////////////////////////////////////////////
-//Full Name :
-//Yorku Email :
-//Date :
+//Full Name : Ted Lee
+//Yorku Email : ted04@my.yorku.ca	
+//Date : 25/02/2024
 //Authenticity Declaration :
 //I declare this submission is the result of my own work and has not been
 //shared with any other student or 3rd party content provider.This submitted
@@ -227,22 +227,63 @@ public class YorkSortedDoublyLinkedList<E> implements List<E> {
 	 */
 	public void sortAscending(Comparator<E> comparator) {
 		// TODO: Your implementation of this method starts here
+		if (size > 1) {
+			Node<E> curr = header.next;
+			Node<E> nextNode;
 
+			while (curr != trailer) {
+				nextNode = curr.next;
+
+				while (nextNode != trailer) {
+					if (comparator.compare(curr.element, nextNode.element) > 0) {
+						E tmp = curr.element;
+
+						curr.element = nextNode.element;
+						nextNode.element = tmp;
+
+					}
+
+					nextNode = nextNode.next;
+				}
+
+				curr = curr.next;
+
+			}
+
+		}
 	}
 
 	/**
-	 * 
 	 * Sorts a list in descending order by using a Comparator object
-	 * 
 	 * 
 	 * @param comparator
 	 */
 	public void sortDescending(Comparator<E> comparator) {
 		// TODO: Your implementation of this method starts here
+		if (size > 1) {
+			Node<E> curr = header.next;
+			Node<E> nextNode;
 
+			while (curr != trailer) {
+				nextNode = curr.next;
+
+				while (nextNode != trailer) {
+					if (comparator.compare(curr.element, nextNode.element) < 0) {
+						E tmp = curr.element;
+
+						curr.element = nextNode.element;
+						nextNode.element = tmp;
+
+					}
+
+					nextNode = nextNode.next;
+				}
+
+				curr = curr.next;
+			}
+
+		}
 	}
-
-	///////
 
 	@Override
 	public int size() {
@@ -325,9 +366,7 @@ public class YorkSortedDoublyLinkedList<E> implements List<E> {
 		if (i < 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		if (i >= size) {
-			addLast(e);
-		}
+
 		add(i + 1, e);
 
 	}
@@ -427,7 +466,7 @@ public class YorkSortedDoublyLinkedList<E> implements List<E> {
 		Node<E> curr = header.next;
 		while (curr != trailer) {
 			if (curr.element.equals(e)) {
-				curr.prev = curr.next;
+				curr.prev.next = curr.next;
 				curr.next.prev = curr.prev;
 				size--;
 				return true;
@@ -476,6 +515,10 @@ public class YorkSortedDoublyLinkedList<E> implements List<E> {
 		if (otherList == null) {
 			throw new NullPointerException();
 		}
+
+		if (otherList.isEmpty()) {
+			return false;
+		}
 		boolean changed = false;
 
 		Node<E> curr = header.next;
@@ -506,6 +549,9 @@ public class YorkSortedDoublyLinkedList<E> implements List<E> {
 	@Override
 	public String toString() {
 		// TODO: Your implementation of this method starts here
+		if (isEmpty()) {
+			return "";
+		}
 		StringBuilder ans = new StringBuilder();
 		ans.append("[");
 		Node<E> curr = header.next;
