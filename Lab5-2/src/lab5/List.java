@@ -1,6 +1,5 @@
 package lab5;
 
-import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -44,20 +43,23 @@ public interface List<E> extends Iterable<E> {
 	 */
 	E set(int i, E e) throws IndexOutOfBoundsException;
 
+	
+	
+	
 	/**
 	 * Inserts the specified element at the specified position in this list.
-	 * Shifts the element currently at that position
-	 * (if any) and any subsequent elements to the right (adds one to their
-	 * indices).
-	 * 
-	 * Remember that You need if the index i is greater than the list size
-	 * then you need to add the element e at the end of the list
+     * Shifts the element currently at that position
+     * (if any) and any subsequent elements to the right (adds one to their
+     * indices).
+     * 
+     * Remember that You need if the index i is greater than the list size 
+     * then you need to add the element e at the end of the list 
 	 * 
 	 * @param i the index at which the new element should be stored
 	 * @param e the new element to be stored
 	 * 
 	 */
-	void add(int i, E e);
+	void add(int i, E e) ;
 
 	/**
 	 * Removes and returns the element at the given index, shifting all subsequent
@@ -74,8 +76,7 @@ public interface List<E> extends Iterable<E> {
 	 * Returns {@code true} if this list contains the specified element. More
 	 * formally, returns {@code true} if and only if this list contains at least one
 	 * element {@code e} such that {@code equals(e, Element)}.
-	 * note that the method returns false if list is empty
-	 * 
+	 * note that the method returns false if list is empty 
 	 * @param e element whose presence in this list is to be tested
 	 * @return {@code true} if this list contains the specified element
 	 * 
@@ -133,26 +134,24 @@ public interface List<E> extends Iterable<E> {
 
 	/**
 	 * Retains only the elements in this list that are contained in the
-	 * specified otherList . In other words, removes
-	 * from this list all of its elements that are not contained in the
-	 * specified otherList. Returns true if this list changed as a result of the
-	 * call
-	 * 
-	 * @param otherList list containing elements to be retained in this list
-	 * @return {@code true} if this list changed as a result of the call
-	 * @throws NullPointerException if this list contains a null element and the
-	 *                              specified otherList does not permit null
-	 *                              elements
-	 *                              or if the specified otherList is null
+     * specified otherList .  In other words, removes
+     * from this list all of its elements that are not contained in the
+     * specified otherList. Returns true if this list changed as a result of the call
+	 * @param otherList  list containing elements to be retained in this list
+     * @return {@code true} if this list changed as a result of the call
+     * @throws NullPointerException if this list contains a null element and the
+     *         specified otherList does not permit null elements         
+     *         or if the specified otherList is null
 	 */
 	boolean retainAll(List<E> otherList) throws NullPointerException;;
 
+	
+	
+	
 	/**
 	 * Returns an iterator of the elements stored in the list.
 	 * 
 	 * @return iterator of the list's elements
 	 */
 	Iterator<E> iterator();
-
-	void sort(Comparator<E> comparator);
 }
